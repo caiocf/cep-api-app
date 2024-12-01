@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  wiremock:
+    image: wiremock/wiremock:latest
+    container_name: wiremock-iu
+    ports:
+      - "8081:8080"
+    volumes:
+      - "./mappings:/home/wiremock/mappings"
+    command: ["--verbose"]
+    networks:
+      - rede_mckf_net
+
+  # Jaeger
+  jaeger-all-in-one:
+    image: jaegertracing/all-in-one:latest
+    restart: always
+    ports:
+      - "16686:16686"
+      - "14268"
+      - "14250"
+    networks:
+      - rede_mckf_net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - rede_mckf_net
+
+  otlp-collector:
+    #image: otel/opentelemetry-collector-contrib
+    image: otel/opentelemetry-collector:latest
+    container_name: otlp-collector
+    ports:
+      - "4317:4317"  # gRPC endpoint for receiving traces and metrics
+      - "4318:4318"  # HTTP endpoint for receiving traces and metrics
+      - "8888:8888"  # Prometheus exporter endpoint
+      - "8889:8889"  # Prometheus exporter endpoint
+    volumes:
+      - ./otel-config.yml:/otel-local-config.yaml
+    command: ["--config=/otel-local-config.yaml"]
+    networks:
+      - rede_mckf_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4318"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - rede_mckf_net
+    depends_on:
+      - prometheus
+
+networks:
+  rede_mckf_net:
+    driver: bridge
