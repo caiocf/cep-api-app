@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/api/v1/ceps/50000000/json/"
+  },
+  "response": {
+    "status": 500,
+    "body": "{ \"error\": \"Internal server error\" }",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

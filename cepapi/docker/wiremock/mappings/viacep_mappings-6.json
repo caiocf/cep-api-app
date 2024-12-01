@@ -1,0 +1,14 @@
+
+  {
+    "request": {
+      "method": "GET",
+      "urlPattern": "/api/v1/ceps/34567890/json/"
+    },
+    "response": {
+      "status": 200,
+      "bodyFileName": "viacep-response-6.json",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  }

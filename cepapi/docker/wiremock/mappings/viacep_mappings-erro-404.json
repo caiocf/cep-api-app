@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/api/v1/ceps/99999999/json/"
+  },
+  "response": {
+    "status": 404,
+    "body": "{ \"error\": \"CEP not found\" }",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
