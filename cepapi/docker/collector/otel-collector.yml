@@ -29,8 +29,8 @@ exporters:
     metric_expiration: 180m
     enable_open_metrics: true
     add_metric_suffixes: false
-    resource_to_telemetry_conversion:
-      enabled: true
+    #resource_to_telemetry_conversion:
+    #  enabled: true
 
   otlp/jaeger:
     endpoint: "http://jaeger:4317"
