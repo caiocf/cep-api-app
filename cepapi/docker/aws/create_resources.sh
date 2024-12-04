@@ -5,22 +5,32 @@ echo -e "* Criando Recurso AWS      *"
 echo -e "****************************"
 
 export no_proxy="localhost"
+NomeFila=Correios_SQS
+NomeFilaDlq=Correios_SQS_DLQ
 
-echo "Criando fila SQS"
+echo -e "INFO - Criado Fila SQS"
+aws --endpoint-url=http://localhost:4566 sqs --region=sa-east-1 create-queue --queue-name $NomeFila
+aws --endpoint-url=http://localhost:4566 sqs --region=sa-east-1 create-queue --queue-name $NomeFilaDlq
 
-echo -e "Cria a fila DLQ"
-aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name Correios_DLQ --region sa-east-1
+echo -e "Obter o QueueUrl das Filas"
+QueueUrlCorreios=$(aws --endpoint-url=http://localhost:4566 sqs get-queue-url --queue-name "$NomeFila" --query 'QueueUrl' --output text)
+QueueUrlCorreiosDlq=$(aws --endpoint-url=http://localhost:4566 sqs get-queue-url --queue-name "$NomeFilaDlq" --query 'QueueUrl' --output text)
 
-echo -e "Cria a fila principal e configura a DLQ"
-aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name Correios_SQS --region sa-east-1 --attributes '{
-    "RedrivePolicy": "{\"maxReceiveCount\":\"5\", \"deadLetterTargetArn\":\"arn:aws:sqs:sa-east-1:000000000000:Correios_DLQ\"}"
-}'
 
-# Definindo a data e hora atual no formato ISO 8601
-CURRENT_DATETIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+echo -e "Obter o ARN da DLQ"
+DLQ_ARN_CORREIOS=$(aws --endpoint-url=http://localhost:4566 --region=sa-east-1 sqs get-queue-attributes --queue-url $QueueUrlCorreiosDlq --attribute-names QueueArn --query 'Attributes.QueueArn' --output text)
 
-echo -e "Publicando a mensagem JSON na fila Correios_SQS"
-aws --endpoint-url=http://localhost:4566 sqs send-message --queue-url http://localhost:4566/000000000000/Correios_SQS --message-body '{
+
+echo -e "Configurar a política de redrive"
+aws --endpoint-url=http://localhost:4566 --region=sa-east-1 sqs set-queue-attributes --queue-url $QueueUrlCorreios --attributes '{"RedrivePolicy":"{\"deadLetterTargetArn\":\"'"$DLQ_ARN_CORREIOS"'\",\"maxReceiveCount\":\"5\"}"}'
+
+
+echo -e "Imprimindo todos os atributos da fila sqs "
+aws --endpoint-url=http://localhost:4566 --region=sa-east-1 sqs get-queue-attributes --queue-url $QueueUrlCorreios --attribute-names All
+
+
+echo -e "Publicando uma msg de Teste no Topico 'itoken-async-enablement' SNS"
+aws --endpoint-url=http://localhost:4566 sqs send-message --queue-url $QueueUrlCorreios --message-body '{
   "cep": "38408-072",
   "logradouro": "Rua Romeu Margonari",
   "complemento": "",
@@ -37,9 +47,12 @@ aws --endpoint-url=http://localhost:4566 sqs send-message --queue-url http://loc
   "timestamp": "'"$CURRENT_DATETIME"'"
 }'
 
+
 echo -e "Recebendo Msg da fila SQS"
 aws --endpoint-url=http://localhost:4566 sqs receive-message \
-  --queue-url http://localhost:4566/000000000000/Correios_SQS \
+  --queue-url $QueueUrlCorreios \
   --region sa-east-1 \
   --max-number-of-messages 1 \
   --wait-time-seconds 10
+
+set +x

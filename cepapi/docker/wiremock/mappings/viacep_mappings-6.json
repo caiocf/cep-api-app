@@ -2,7 +2,7 @@
   {
     "request": {
       "method": "GET",
-      "urlPattern": "/api/v1/ceps/34567890/json/"
+      "urlPattern": "/ws/34567890/json/"
     },
     "response": {
       "status": 200,

@@ -127,8 +127,8 @@ services:
       - SERVICES=secretmanager,sns,sqs
       - DEBUG=1
       - DOCKER_HOST=unix:///var/run/docker.sock
-      - AWS_ACCESS_KEY_ID=minha_key
-      - AWS_SECRET_ACCESS_KEY=minha_key
+      - AWS_ACCESS_KEY_ID=key
+      - AWS_SECRET_ACCESS_KEY=secret101
       - AWS_DEFAULT_REGION=sa-east-1
       - USE_SINGLE_REGION=true
       - DISABLE_CORS_ALLOWED_ORIGIN=app://
@@ -137,6 +137,32 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./docker/aws/create_resources.sh:/etc/localstack/init/ready.d//docker/aws/create_resources.sh
+
+  cep_api_bff:
+    container_name: cep-api-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ~/.m2:/root/.m2
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=-Xms512m -Xmx1024m
+      - AWS_REGION=sa-east-1
+      - AWS_SECRET_ACCESS_KEY=secret101
+      - AWS_ACCESS_KEY_ID=key
+      - SPRING_CLOUD_AWS_ENDPOINT=http://localstack:4566
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://collector:4318/v1/traces
+      - MANAGEMENT_OTLP_METRICS_EXPORT_URL=http://collector:4318/v1/metrics
+      - MANAGEMENT_OTLP_LOGGING_ENDPOINT=http://collector:4318/v1/log
+    restart: always
+    depends_on:
+      - collector
+      - localstack
+      - wiremock
+    networks:
+      - rede_mckf_net
 networks:
   rede_mckf_net:
     driver: bridge

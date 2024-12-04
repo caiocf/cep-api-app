@@ -1,8 +1,7 @@
 package br.com.mkcf.cepapi.controller;
 
-import br.com.mkcf.cepapi.service.CepService;
 import br.com.mkcf.cepapi.model.CepResponse;
-import lombok.RequiredArgsConstructor;
+import br.com.mkcf.cepapi.service.CepService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

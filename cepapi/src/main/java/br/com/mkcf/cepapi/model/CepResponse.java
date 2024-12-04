@@ -1,15 +1,15 @@
 package br.com.mkcf.cepapi.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CepResponse {
 
 
