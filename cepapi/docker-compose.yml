@@ -124,7 +124,7 @@ services:
     networks:
       - rede_mckf_net
     environment:
-      - SERVICES=secretmanager,sns,sqs
+      - SERVICES=secretmanager,sns,sqs,dynamodb
       - DEBUG=1
       - DOCKER_HOST=unix:///var/run/docker.sock
       - AWS_ACCESS_KEY_ID=key

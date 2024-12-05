@@ -25,11 +25,13 @@ echo -e "Configurar a política de redrive"
 aws --endpoint-url=http://localhost:4566 --region=sa-east-1 sqs set-queue-attributes --queue-url $QueueUrlCorreios --attributes '{"RedrivePolicy":"{\"deadLetterTargetArn\":\"'"$DLQ_ARN_CORREIOS"'\",\"maxReceiveCount\":\"5\"}"}'
 
 
-echo -e "Imprimindo todos os atributos da fila sqs "
+echo -e "Imprimindo todos os atributos da fila sqs $QueueUrlCorreios "
 aws --endpoint-url=http://localhost:4566 --region=sa-east-1 sqs get-queue-attributes --queue-url $QueueUrlCorreios --attribute-names All
 
+# Definindo a data e hora atual no formato ISO 8601
+CURRENT_DATETIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 
-echo -e "Publicando uma msg de Teste no Topico 'itoken-async-enablement' SNS"
+echo -e "Publicando uma msg de Teste no Topico $QueueUrlCorreios SNS"
 aws --endpoint-url=http://localhost:4566 sqs send-message --queue-url $QueueUrlCorreios --message-body '{
   "cep": "38408-072",
   "logradouro": "Rua Romeu Margonari",
@@ -48,11 +50,125 @@ aws --endpoint-url=http://localhost:4566 sqs send-message --queue-url $QueueUrlC
 }'
 
 
-echo -e "Recebendo Msg da fila SQS"
+echo -e "Recebendo Msg da fila SQS $QueueUrlCorreios"
 aws --endpoint-url=http://localhost:4566 sqs receive-message \
   --queue-url $QueueUrlCorreios \
   --region sa-east-1 \
   --max-number-of-messages 1 \
   --wait-time-seconds 10
+echo -e "#########################################################################"
+
+echo -e "Criando a tabela Dynamodb"
+aws dynamodb create-table \
+    --endpoint-url http://localhost:4566 \
+    --table-name ConsultaCEP \
+    --attribute-definitions \
+        AttributeName=cep,AttributeType=S \
+        AttributeName=localidade,AttributeType=S \
+		AttributeName=dataCadastrado,AttributeType=S \
+        AttributeName=regiao,AttributeType=S \
+    --key-schema \
+        AttributeName=cep,KeyType=HASH \
+        AttributeName=dataCadastrado,KeyType=RANGE \
+    --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
+    --global-secondary-indexes \
+        '[
+            {
+                "IndexName": "LocalidadeIndex",
+                "KeySchema": [
+                    {"AttributeName": "localidade", "KeyType": "HASH"}
+                ],
+                "Projection": {
+                    "ProjectionType": "ALL"
+                },
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 5
+                }
+            },
+            {
+                "IndexName": "RegiaoIndex",
+                "KeySchema": [
+                    {"AttributeName": "regiao", "KeyType": "HASH"}
+                ],
+                "Projection": {
+                    "ProjectionType": "ALL"
+                },
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 5
+                }
+            }
+        ]'
+
+echo -e "Definindo o atributo expirationTimestamp como TTL"
+aws dynamodb update-time-to-live \
+    --endpoint-url http://localhost:4566 \
+    --table-name ConsultaCEP \
+    --time-to-live-specification \
+        "Enabled=true, AttributeName=expirationTimestamp"
+
+echo -e "Listando as tabelas:"
+aws --endpoint-url=http://localhost:4566 dynamodb list-tables
+
+echo -e "Consulta Índice da tabela ConsultaCEP"
+aws --endpoint-url http://localhost:4566 dynamodb describe-table --table-name ConsultaCEP
+
+current_time=$(date +%s)
+ttl_value=$((current_time + 2592000)) # Expiração em 30 dias (2592000 segundos)
+
+echo -e "Cadastrando item no na tabela do ConsultaCEP"
+aws --endpoint-url=http://localhost:4566 dynamodb put-item \
+    --table-name ConsultaCEP \
+    --item '{
+        "cep": {"S": "38408-072"},
+		"dataCadastrado": {"S": "2024-12-04T22:30:31Z"},
+		"expirationTimestamp": {"N": "1733280051"},
+        "logradouro": {"S": "Rua Romeu Margonari"},
+        "bairro": {"S": "Santa Mônica"},
+        "localidade": {"S": "Uberlândia"},
+        "uf": {"S": "MG"},
+        "estado": {"S": "Minas Gerais"},
+        "regiao": {"S": "Sudeste"},
+        "ibge": {"S": "3170206"},
+        "ddd": {"S": "34"},
+        "siafi": {"S": "5403"},
+        "complemento": {"S": ""}
+    }'
+
+echo -e "Consulta uma pela Primary Key Condition expression"
+#aws dynamodb get-item \
+#    --endpoint-url http://localhost:4566 \
+#    --table-name ConsultaCEP \
+#    --key '{"cep": {"S": "38408-072"}}'
+aws dynamodb query \
+    --endpoint-url http://localhost:4566 \
+    --table-name ConsultaCEP \
+    --key-condition-expression "cep = :cep" \
+    --expression-attribute-values '{":cep": {"S": "38408-072"}}'
+
+echo -e "Consulta uma pela Primary Key e Sort Key com Condition expression"
+aws dynamodb query \
+    --endpoint-url http://localhost:4566 \
+    --table-name ConsultaCEP \
+    --key-condition-expression "cep = :cep AND dataCadastrado = :ts" \
+    --expression-attribute-values '{":cep": {"S": "38408-072"}, ":ts": {"S": "2024-12-04T22:30:31Z"}}'
+
+echo -e "Consulta uma pela regiao pelo GSI RegiaoIndex"
+aws dynamodb query \
+    --endpoint-url http://localhost:4566 \
+    --table-name ConsultaCEP \
+    --index-name RegiaoIndex \
+    --key-condition-expression "regiao = :rg" \
+    --expression-attribute-values '{":rg": {"S": "Sudeste"}}'
+
+echo -e "Consulta uma pela regiao pelo GSI LocalidadeIndex"
+aws dynamodb query \
+    --endpoint-url http://localhost:4566 \
+    --table-name ConsultaCEP \
+    --index-name LocalidadeIndex \
+    --key-condition-expression "localidade = :loc" \
+    --expression-attribute-values '{":loc": {"S": "Uberlândia"}}'
+
 
 set +x
