@@ -1,6 +1,6 @@
 package br.com.mkcf.cepapi.repository;
 
-import br.com.mkcf.cepapi.model.ConsultaCEP;
+import br.com.mkcf.cepapi.model.CepEntity;
 import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
@@ -12,26 +12,26 @@ import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import java.util.List;
 
 @Repository
-public class CEPRepository {
+public class CepRepository {
 
-    private final DynamoDbTable<ConsultaCEP> table;
+    private final DynamoDbTable<CepEntity> table;
 
-    public CEPRepository(DynamoDbEnhancedClient enhancedClient) {
-        this.table = enhancedClient.table("ConsultaCEP", TableSchema.fromBean(ConsultaCEP.class));
+    public CepRepository(DynamoDbEnhancedClient enhancedClient) {
+        this.table = enhancedClient.table("ConsultaCEP", TableSchema.fromBean(CepEntity.class));
     }
 
-    public void save(ConsultaCEP consultaCEP) {
-        table.putItem(consultaCEP);
+    public void save(CepEntity cepEntity) {
+        table.putItem(cepEntity);
     }
 
-    public ConsultaCEP findById(String cep, String dataCadastrado) {
+    public CepEntity findById(String cep, String dataCadastrado) {
         return table.getItem(r -> r.key(Key.builder()
                 .partitionValue(cep)
                 .sortValue(dataCadastrado)
                 .build()));
     }
 
-    public List<ConsultaCEP> findById(String cep) {
+    public List<CepEntity> findById(String cep) {
 
         return table.query(r -> r.queryConditional(QueryConditional.keyEqualTo(Key.builder()
                         .partitionValue(cep)
@@ -41,7 +41,7 @@ public class CEPRepository {
                 .toList();
     }
 
-    public List<Page<ConsultaCEP>> findByLocalidade(String localidade) {
+    public List<Page<CepEntity>> findByLocalidade(String localidade) {
 
         var index = table.index("LocalidadeIndex");
         return index.query(r -> r.queryConditional(QueryConditional.keyEqualTo(Key.builder()

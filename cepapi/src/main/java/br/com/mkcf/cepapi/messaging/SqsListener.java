@@ -1,8 +1,7 @@
-package br.com.mkcf.cepapi.queue;
+package br.com.mkcf.cepapi.messaging;
 
-import br.com.mkcf.cepapi.model.ConsultaCEP;
-import br.com.mkcf.cepapi.repository.CEPRepository;
-import io.awspring.cloud.sqs.annotation.SqsListener;
+import br.com.mkcf.cepapi.model.CepEntity;
+import br.com.mkcf.cepapi.repository.CepRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -10,24 +9,23 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Component
-public class SqsClientConsumerApi {
+public class SqsListener {
 
-	private Logger logger = LoggerFactory.getLogger(SqsClientConsumerApi.class);
+	private Logger logger = LoggerFactory.getLogger(SqsListener.class);
 
-	private final CEPRepository cepRepository;
+	private final CepRepository cepRepository;
 
-	public SqsClientConsumerApi(CEPRepository cepRepository) {
+	public SqsListener(CepRepository cepRepository) {
 		this.cepRepository = cepRepository;
 	}
 
-	@SqsListener(queueNames  = "${sqs.queue.name}")
-	public void onMessage(MessageCreatedEvent message) {
+	@io.awspring.cloud.sqs.annotation.SqsListener(queueNames  = "${sqs.queue.name}")
+	public void onMessage(SqsMessageProcessor message) {
 		logger.info("Mensagem recebida fila SQS: {}", message);
 
-		ConsultaCEP cep = ConsultaCEP.builder()
+		CepEntity cep = CepEntity.builder()
 				.cep(message.codigoCep())
 				.dataCadastrado(DateTimeFormatter.ISO_INSTANT.format(Instant.now()))
 				.expirationTimestamp(Instant.now().plus(30, ChronoUnit.DAYS).getEpochSecond())

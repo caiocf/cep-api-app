@@ -2,7 +2,8 @@ package br.com.mkcf.cepapi.controller;
 
 import br.com.mkcf.cepapi.model.CepResponse;
 import br.com.mkcf.cepapi.service.CepService;
-import org.springframework.http.ResponseEntity;
+import jakarta.validation.constraints.Pattern;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +19,8 @@ public class CepController {
     }
 
     @GetMapping("/{cep}")
-    public ResponseEntity<CepResponse> consultarCep(@PathVariable String cep) {
-        CepResponse response = cepService.consultarCep(cep);
-        return ResponseEntity.ok(response);
+    public CepResponse consultarCep(@PathVariable @Validated @Pattern(regexp = "\\d{5}\\d{3}") String cep) {
+
+        return cepService.consultarCep(cep);
     }
 }

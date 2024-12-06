@@ -1,15 +1,15 @@
 package br.com.mkcf.cepapi.model;
 
-import lombok.*;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamoDbBean
 @Builder
-public class ConsultaCEP {
+public class CepEntity {
 
     private String cep;
     private String dataCadastrado;

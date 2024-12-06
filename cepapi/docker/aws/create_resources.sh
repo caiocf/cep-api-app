@@ -31,31 +31,26 @@ aws --endpoint-url=http://localhost:4566 --region=sa-east-1 sqs get-queue-attrib
 # Definindo a data e hora atual no formato ISO 8601
 CURRENT_DATETIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 
-echo -e "Publicando uma msg de Teste no Topico $QueueUrlCorreios SNS"
-aws --endpoint-url=http://localhost:4566 sqs send-message --queue-url $QueueUrlCorreios --message-body '{
-  "cep": "38408-072",
-  "logradouro": "Rua Romeu Margonari",
-  "complemento": "",
-  "unidade": "",
-  "bairro": "Santa Mônica",
-  "localidade": "Uberlândia",
-  "uf": "MG",
-  "estado": "Minas Gerais",
-  "uf": "Sudeste",
-  "ibge": "3170206",
-  "gia": "",
-  "ddd": "34",
-  "siafi": "5403",
-  "timestamp": "'"$CURRENT_DATETIME"'"
-}'
+#echo -e "Publicando uma msg de Teste no Topico $QueueUrlCorreios SNS"
+#aws --endpoint-url=http://localhost:4566 sqs send-message --queue-url $QueueUrlCorreios --message-body '
+#{
+#    "cep": {
+#        "logradouro": "Romeu Margonari",
+#        "bairro": "Santa Mônica",
+#        "localidade": "Uberlândia",
+#        "uf": "MG"
+#    },
+#    "codigoCep": "38408072"
+#}'
 
 
-echo -e "Recebendo Msg da fila SQS $QueueUrlCorreios"
-aws --endpoint-url=http://localhost:4566 sqs receive-message \
-  --queue-url $QueueUrlCorreios \
-  --region sa-east-1 \
-  --max-number-of-messages 1 \
-  --wait-time-seconds 10
+#echo -e "Recebendo Msg da fila SQS $QueueUrlCorreios"
+#aws --endpoint-url=http://localhost:4566 sqs receive-message \
+#  --queue-url $QueueUrlCorreios \
+#  --region sa-east-1 \
+#  --max-number-of-messages 1 \
+#  --wait-time-seconds 10
+
 echo -e "#########################################################################"
 
 echo -e "Criando a tabela Dynamodb"
