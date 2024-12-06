@@ -1,12 +1,10 @@
 {
-  "cep": "45678-901",
-  "logradouro": "Praça da ABC 7",
-  "complemento": "lado ímpar",
-  "bairro": "Sé",
-  "localidade": "São Paulo",
+  "cep": "64600012",
+  "logradouro": "Rua São Francisco",
+  "complemento": "",
+  "bairro": "Centro",
+  "localidade": "Picos",
   "uf": "SP",
-  "ibge": "3550308",
-  "gia": "1004",
-  "ddd": "11",
-  "siafi": "7107"
+  "ibge": "2208007",
+  "ddd": "89"
 }

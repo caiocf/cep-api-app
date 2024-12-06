@@ -2,7 +2,7 @@
   {
     "request": {
       "method": "GET",
-      "urlPattern": "/ws/34567890/json/"
+      "urlPattern": "/ws/01505000/json/"
     },
     "response": {
       "status": 200,

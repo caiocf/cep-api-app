@@ -1,14 +1,13 @@
 {
   "request": {
     "method": "GET",
-    "urlPattern": "/ws/01007901/json/"
+    "urlPattern": "/ws/38400902/json/"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "viacep-response-8.json",
+    "bodyFileName": "viacep-response-2.json",
     "headers": {
       "Content-Type": "application/json"
     }
   }
 }
-

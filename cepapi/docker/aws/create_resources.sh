@@ -41,7 +41,7 @@ aws --endpoint-url=http://localhost:4566 sqs send-message --queue-url $QueueUrlC
   "localidade": "Uberlândia",
   "uf": "MG",
   "estado": "Minas Gerais",
-  "regiao": "Sudeste",
+  "uf": "Sudeste",
   "ibge": "3170206",
   "gia": "",
   "ddd": "34",
@@ -66,7 +66,7 @@ aws dynamodb create-table \
         AttributeName=cep,AttributeType=S \
         AttributeName=localidade,AttributeType=S \
 		AttributeName=dataCadastrado,AttributeType=S \
-        AttributeName=regiao,AttributeType=S \
+        AttributeName=uf,AttributeType=S \
     --key-schema \
         AttributeName=cep,KeyType=HASH \
         AttributeName=dataCadastrado,KeyType=RANGE \
@@ -87,9 +87,9 @@ aws dynamodb create-table \
                 }
             },
             {
-                "IndexName": "RegiaoIndex",
+                "IndexName": "UfIndex",
                 "KeySchema": [
-                    {"AttributeName": "regiao", "KeyType": "HASH"}
+                    {"AttributeName": "uf", "KeyType": "HASH"}
                 ],
                 "Projection": {
                     "ProjectionType": "ALL"
@@ -121,19 +121,14 @@ echo -e "Cadastrando item no na tabela do ConsultaCEP"
 aws --endpoint-url=http://localhost:4566 dynamodb put-item \
     --table-name ConsultaCEP \
     --item '{
-        "cep": {"S": "38408-072"},
-		"dataCadastrado": {"S": "2024-12-04T22:30:31Z"},
-		"expirationTimestamp": {"N": "1733280051"},
+        "cep": {"S": "38408072"},
+		    "dataCadastrado": {"S": "2024-12-06T03:32:21.164888800Z"},
+		    "expirationTimestamp": {"N": "1733280051"},
+        "complemento": {"S": ""},
         "logradouro": {"S": "Rua Romeu Margonari"},
         "bairro": {"S": "Santa Mônica"},
         "localidade": {"S": "Uberlândia"},
-        "uf": {"S": "MG"},
-        "estado": {"S": "Minas Gerais"},
-        "regiao": {"S": "Sudeste"},
-        "ibge": {"S": "3170206"},
-        "ddd": {"S": "34"},
-        "siafi": {"S": "5403"},
-        "complemento": {"S": ""}
+        "uf": {"S": "MG"}
     }'
 
 echo -e "Consulta uma pela Primary Key Condition expression"
@@ -154,15 +149,15 @@ aws dynamodb query \
     --key-condition-expression "cep = :cep AND dataCadastrado = :ts" \
     --expression-attribute-values '{":cep": {"S": "38408-072"}, ":ts": {"S": "2024-12-04T22:30:31Z"}}'
 
-echo -e "Consulta uma pela regiao pelo GSI RegiaoIndex"
+echo -e "Consulta uma pela uf pelo GSI UfIndex"
 aws dynamodb query \
     --endpoint-url http://localhost:4566 \
     --table-name ConsultaCEP \
-    --index-name RegiaoIndex \
-    --key-condition-expression "regiao = :rg" \
-    --expression-attribute-values '{":rg": {"S": "Sudeste"}}'
+    --index-name UfIndex \
+    --key-condition-expression "uf = :uf" \
+    --expression-attribute-values '{":uf": {"S": "Sudeste"}}'
 
-echo -e "Consulta uma pela regiao pelo GSI LocalidadeIndex"
+echo -e "Consulta uma pela uf pelo GSI LocalidadeIndex"
 aws dynamodb query \
     --endpoint-url http://localhost:4566 \
     --table-name ConsultaCEP \

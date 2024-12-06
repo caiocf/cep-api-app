@@ -6,13 +6,10 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CepResponse {
-
-
     private String logradouro;
     private String complemento;
     private String bairro;

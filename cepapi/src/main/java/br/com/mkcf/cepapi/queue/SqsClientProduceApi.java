@@ -5,9 +5,6 @@ import io.awspring.cloud.sqs.operations.SqsTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 @Component
 public class SqsClientProduceApi {
 
@@ -19,9 +16,8 @@ public class SqsClientProduceApi {
 		this.sqsTemplate = sqsTemplate;
 	}
 
-	public void sendMessage(CepResponse cepResponse) {
-		sqsTemplate.send(queueHost, new MessageCreatedEvent(cepResponse,
-				new SimpleDateFormat("yyyy/MM/dd hh:mm:ss yyy").format(new Date())));
+	public void sendMessage(CepResponse cepResponse, String codigoCep) {
+		sqsTemplate.send(queueHost, new MessageCreatedEvent(cepResponse,codigoCep));
 	}
 
 }

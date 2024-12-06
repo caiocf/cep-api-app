@@ -1,12 +1,10 @@
 {
-  "cep": "34567-890",
-  "logradouro": "Praça da ABC 6",
-  "complemento": "lado ímpar",
+  "cep": "01505000",
+  "logradouro": "Rua dos Estudantes",
+  "complemento": "",
   "bairro": "Sé",
   "localidade": "São Paulo",
   "uf": "SP",
   "ibge": "3550308",
-  "gia": "1004",
-  "ddd": "11",
-  "siafi": "7107"
+  "ddd": "11"
 }

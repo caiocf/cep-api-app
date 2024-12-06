@@ -6,16 +6,17 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 
 import java.util.List;
 
 @Repository
-public class ConsultaCEPRepository {
+public class CEPRepository {
 
     private final DynamoDbTable<ConsultaCEP> table;
 
-    public ConsultaCEPRepository(DynamoDbEnhancedClient enhancedClient) {
+    public CEPRepository(DynamoDbEnhancedClient enhancedClient) {
         this.table = enhancedClient.table("ConsultaCEP", TableSchema.fromBean(ConsultaCEP.class));
     }
 
@@ -23,10 +24,10 @@ public class ConsultaCEPRepository {
         table.putItem(consultaCEP);
     }
 
-    public ConsultaCEP findById(String cep, Long timestamp) {
+    public ConsultaCEP findById(String cep, String dataCadastrado) {
         return table.getItem(r -> r.key(Key.builder()
                 .partitionValue(cep)
-                .sortValue(timestamp)
+                .sortValue(dataCadastrado)
                 .build()));
     }
 
@@ -38,6 +39,14 @@ public class ConsultaCEPRepository {
                 .items()
                 .stream()
                 .toList();
+    }
+
+    public List<Page<ConsultaCEP>> findByLocalidade(String localidade) {
+
+        var index = table.index("LocalidadeIndex");
+        return index.query(r -> r.queryConditional(QueryConditional.keyEqualTo(Key.builder()
+                        .partitionValue(localidade)
+                        .build()))).stream().toList();
     }
 
 

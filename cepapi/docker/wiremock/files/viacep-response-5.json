@@ -1,12 +1,10 @@
 {
-  "cep": "23456-789",
-  "logradouro": "Praça da ABC 5",
-  "complemento": "lado ímpar",
+  "cep": "01005000",
+  "logradouro": "Rua Benjamim Constant",
+  "complemento": "",
   "bairro": "Sé",
   "localidade": "São Paulo",
   "uf": "SP",
   "ibge": "3550308",
-  "gia": "1004",
-  "ddd": "11",
-  "siafi": "7107"
+  "ddd": "11"
 }

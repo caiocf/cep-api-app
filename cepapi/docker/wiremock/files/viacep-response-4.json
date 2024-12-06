@@ -1,12 +1,10 @@
 {
-  "cep": "12345-678",
-  "logradouro": "Praça da ABC 4",
-  "complemento": "lado ímpar",
+  "cep": "01001000",
+  "logradouro": "Praça da Sé",
+  "complemento": "",
   "bairro": "Sé",
   "localidade": "São Paulo",
   "uf": "SP",
   "ibge": "3550308",
-  "gia": "1004",
-  "ddd": "11",
-  "siafi": "7107"
+  "ddd": "11"
 }
