@@ -1,4 +1,4 @@
-package br.com.mkcf.cepapi.model;
+package br.com.mkcf.cepapi.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

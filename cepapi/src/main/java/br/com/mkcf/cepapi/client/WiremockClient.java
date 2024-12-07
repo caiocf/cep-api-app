@@ -1,6 +1,6 @@
 package br.com.mkcf.cepapi.client;
 
-import br.com.mkcf.cepapi.model.CepResponse;
+import br.com.mkcf.cepapi.model.dto.CepResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;

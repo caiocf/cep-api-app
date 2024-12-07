@@ -1,4 +1,4 @@
-package br.com.mkcf.cepapi.model;
+package br.com.mkcf.cepapi.model.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

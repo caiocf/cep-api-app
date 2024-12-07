@@ -4,7 +4,7 @@ package br.com.mkcf.cepapi.service;
 import br.com.mkcf.cepapi.client.CorreiosClient;
 import br.com.mkcf.cepapi.client.WiremockClient;
 import br.com.mkcf.cepapi.exception.CepNotFoundException;
-import br.com.mkcf.cepapi.model.CepResponse;
+import br.com.mkcf.cepapi.model.dto.CepResponse;
 import br.com.mkcf.cepapi.messaging.SqsPublisher;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -34,11 +34,15 @@ public class CepService {
     @CircuitBreaker(name = "correiosApi", fallbackMethod = "fallbackConsultaCep")
     public CepResponse consultarCep(String cep) {
         try {
+            logger.info("Iniciando consulta para o CEP: {}", cep);
             CepResponse cepResponse = correiosClient.consultarCep(cep);
+            meterRegistry.counter("cep.consultas.sucesso").increment();
             enviarMensagemParaSQS(cepResponse, cep);
+            logger.info("Consulta para o CEP {} concluída com sucesso.", cep);
             return cepResponse;
         } catch (Exception e) {
             meterRegistry.counter("cep.service.falha").increment(); // Incrementa no erro
+            logger.error("Erro ao consultar o CEP {}: {}", cep, e.getMessage());
             throw e;
         }
     }

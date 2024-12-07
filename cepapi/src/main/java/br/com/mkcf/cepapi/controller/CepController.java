@@ -1,6 +1,6 @@
 package br.com.mkcf.cepapi.controller;
 
-import br.com.mkcf.cepapi.model.CepResponse;
+import br.com.mkcf.cepapi.model.dto.CepResponse;
 import br.com.mkcf.cepapi.service.CepService;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.validation.annotation.Validated;

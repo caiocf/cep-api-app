@@ -22,7 +22,7 @@ Os pacotes do projeto são organizados a partir do prefixo `br.com.mkcf.cepapi`,
 - **br.com.mkcf.cepapi.controller**: Contém a classe `CepController` responsável pelos endpoints REST.
 - **br.com.mkcf.cepapi.service**: Contém a classe `CepService` que implementa a lógica de negócio.
 - **br.com.mkcf.cepapi.client**: Contém a classe `CorreiosClient` responsável pela integração com a API dos Correios.
-- **br.com.mkcf.cepapi.model**: Contém a classe `CepResponse` que representa o modelo de dados da resposta de consulta ao CEP.
+- **br.com.mkcf.cepapi.dto**: Contém a classe `CepResponse` que representa o modelo de dados da resposta de consulta ao CEP.
 - **br.com.mkcf.cepapi.config**: Contém a classe `AppConfig` para a configuração de beans como o `RestClient`.
 - **br.com.mkcf.cepapi.exception**: Contém classes para tratamento de exceções, como `GlobalExceptionHandler`.
 

@@ -1,6 +1,6 @@
 package br.com.mkcf.cepapi.repository;
 
-import br.com.mkcf.cepapi.model.CepEntity;
+import br.com.mkcf.cepapi.model.entity.CepEntity;
 import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;

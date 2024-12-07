@@ -1,5 +1,6 @@
 package br.com.mkcf.cepapi.exception;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +12,11 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<String> handleHttpClientErrorException(HttpClientErrorException ex, WebRequest request) {
@@ -26,5 +32,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {NoResourceFoundException.class,CepNotFoundException.class})
     public ResponseEntity<String> handleNotfound(Exception ex, WebRequest request) {
         return new ResponseEntity<>("Cep não encontrado!", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({CallNotPermittedException.class})
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public void handleCallNotPermittedException() {
     }
 }

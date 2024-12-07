@@ -1,6 +1,7 @@
 package br.com.mkcf.cepapi.messaging;
 
-import br.com.mkcf.cepapi.model.CepResponse;
+import br.com.mkcf.cepapi.model.dto.CepResponse;
+import br.com.mkcf.cepapi.model.dto.SqsMessageProcessor;
 import io.awspring.cloud.sqs.operations.SqsTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

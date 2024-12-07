@@ -1,6 +1,7 @@
 package br.com.mkcf.cepapi.messaging;
 
-import br.com.mkcf.cepapi.model.CepEntity;
+import br.com.mkcf.cepapi.model.dto.SqsMessageProcessor;
+import br.com.mkcf.cepapi.model.entity.CepEntity;
 import br.com.mkcf.cepapi.repository.CepRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
