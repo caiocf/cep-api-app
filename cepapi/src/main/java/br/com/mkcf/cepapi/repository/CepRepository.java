@@ -6,8 +6,10 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.model.GetItemEnhancedRequest;
 import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 
 import java.util.List;
 
@@ -25,28 +27,36 @@ public class CepRepository {
     }
 
     public CepEntity findById(String cep, String dataCadastrado) {
-        return table.getItem(r -> r.key(Key.builder()
-                .partitionValue(cep)
-                .sortValue(dataCadastrado)
-                .build()));
+
+        GetItemEnhancedRequest getItemEnhancedRequest = GetItemEnhancedRequest
+                .builder()
+                .key(Key.builder().partitionValue(cep).sortValue(dataCadastrado).build())
+                .build();
+
+        return table.getItem(getItemEnhancedRequest);
     }
 
     public List<CepEntity> findById(String cep) {
 
-        return table.query(r -> r.queryConditional(QueryConditional.keyEqualTo(Key.builder()
-                        .partitionValue(cep)
-                        .build())))
+        QueryConditional queryConditional = QueryConditional.keyEqualTo(Key.builder()
+                .partitionValue(cep)
+                .build());
+        QueryEnhancedRequest queryEnhancedRequest = QueryEnhancedRequest.builder().queryConditional(queryConditional).build();
+
+        return table.query(queryEnhancedRequest)
                 .items()
                 .stream()
                 .toList();
     }
 
     public List<Page<CepEntity>> findByLocalidade(String localidade) {
+        QueryConditional queryConditional = QueryConditional.keyEqualTo(Key.builder()
+                .partitionValue(localidade)
+                .build());
+        QueryEnhancedRequest queryEnhancedRequest = QueryEnhancedRequest.builder().queryConditional(queryConditional).build();
 
         var index = table.index("LocalidadeIndex");
-        return index.query(r -> r.queryConditional(QueryConditional.keyEqualTo(Key.builder()
-                        .partitionValue(localidade)
-                        .build()))).stream().toList();
+        return index.query(queryEnhancedRequest).stream().toList();
     }
 
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Component
 public class SqsListener {
@@ -38,8 +39,8 @@ public class SqsListener {
 
 		cepRepository.save(cep);
 		logger.info("Cep : {} cadastradoa com sucesso {} ", cep.getCep(),cep.getDataCadastrado() );
-		//List<ConsultaCEP> items = cepRepository.findById("38408-072");
-		//List<ConsultaCEP> items = cepRepository.findByLocalidade("Uberlândia");
+		//List<CepEntity> items = cepRepository.findById("38408072");
+		//List<CepEntity> items = cepRepository.findByLocalidade("Uberlândia");
 	}
 
 }
