@@ -42,6 +42,8 @@ O projeto adota uma **arquitetura em camadas**, organizada da seguinte forma:
 - **Client**: Integra-se à API dos Correios.
 - **Exception Handling**: Implementa o tratamento de exceções com **ControllerAdvice**.
 
+### Arquitetura Software C4 Model
+![C4Model.png](gif/C4Model.png)
 ---
 
 ## **Pacotes**
@@ -59,7 +61,7 @@ Os pacotes seguem o prefixo `br.com.mkcf.cepapi`, conforme descrito:
 
 ## **Diagrama**
 
-![Diagrama do Projeto](gif/diagram.gif)
+![Diagrama do Projeto](gif/diagram.png)
 
 ---
 
