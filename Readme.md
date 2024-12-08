@@ -43,7 +43,6 @@ O projeto adota uma **arquitetura em camadas**, organizada da seguinte forma:
 - **Exception Handling**: Implementa o tratamento de exceções com **ControllerAdvice**.
 
 ### Arquitetura Software C4 Model
-![C4Model.png](gif/C4Model.png)
 <img src="gif/C4Model.png" alt="C4Model" style="width:600px;">
 ---
 
