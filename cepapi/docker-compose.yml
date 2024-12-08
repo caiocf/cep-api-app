@@ -136,7 +136,8 @@ services:
       - "4566-4599:4566-4599"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./docker/aws/create_resources.sh:/etc/localstack/init/ready.d//docker/aws/create_resources.sh
+      - ./docker/aws/create_resources.sh:/etc/localstack/init/ready.d/create_resources.sh
+      
 
   cep_api_bff:
     container_name: cep-api-app

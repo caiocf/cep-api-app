@@ -135,14 +135,14 @@ aws dynamodb query \
     --endpoint-url http://localhost:4566 \
     --table-name ConsultaCEP \
     --key-condition-expression "cep = :cep" \
-    --expression-attribute-values '{":cep": {"S": "38408-072"}}'
+    --expression-attribute-values '{":cep": {"S": "38408072"}}'
 
 echo -e "Consulta uma pela Primary Key e Sort Key com Condition expression"
 aws dynamodb query \
     --endpoint-url http://localhost:4566 \
     --table-name ConsultaCEP \
     --key-condition-expression "cep = :cep AND dataCadastrado = :ts" \
-    --expression-attribute-values '{":cep": {"S": "38408-072"}, ":ts": {"S": "2024-12-04T22:30:31Z"}}'
+    --expression-attribute-values '{":cep": {"S": "38408072"}, ":ts": {"S": "2024-12-06T03:32:21.164888800Z"}}'
 
 echo -e "Consulta uma pela uf pelo GSI UfIndex"
 aws dynamodb query \
@@ -150,7 +150,7 @@ aws dynamodb query \
     --table-name ConsultaCEP \
     --index-name UfIndex \
     --key-condition-expression "uf = :uf" \
-    --expression-attribute-values '{":uf": {"S": "Sudeste"}}'
+    --expression-attribute-values '{":uf": {"S": "MG"}}'
 
 echo -e "Consulta uma pela uf pelo GSI LocalidadeIndex"
 aws dynamodb query \
