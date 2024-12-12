@@ -1,0 +1,100 @@
+openapi: 3.0.3
+info:
+  title: API de CEP
+  description: API para buscar informações de endereço com base no CEP.
+  version: "1.0.0"
+  contact:
+    name: Caio Ferreira
+    email: caiocf@dominio.com
+    url: https://github.com/caiocf/cep-api-app
+servers:
+  - url: http://localhost:8080/api/v1/
+    description: Ambiente local
+  - url: https://cep-api-prod.com/api/v1/
+    description: Ambiente de produção
+paths:
+  /ceps/{cep}:
+    get:
+      summary: Buscar informações por CEP
+      description: Retorna as informações do endereço com base no CEP informado.
+      parameters:
+        - name: cep
+          in: path
+          required: true
+          description: O CEP que será buscado (apenas números, sem traço).
+          schema:
+            type: string
+            pattern: "^[0-9]{8}$"
+      responses:
+        "200":
+          description: Sucesso - Retorna as informações do CEP.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  logradouro:
+                    type: string
+                    example: "Praça da Sé"
+                  complemento:
+                    type: string
+                    example: "lado ímpar"
+                  bairro:
+                    type: string
+                    example: "Sé"
+                  localidade:
+                    type: string
+                    example: "São Paulo"
+                  uf:
+                    type: string
+                    example: "SP"
+        "400":
+          description: Erro de validação - O CEP informado é inválido.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "CEP inválido. Por favor, insira um CEP válido no formato 12345678."
+        "404":
+          description: CEP não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "CEP não encontrado."
+        "500":
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Erro ao buscar informações do CEP."
+components:
+  schemas:
+    CepResponse:
+      type: object
+      properties:
+        logradouro:
+          type: string
+          example: "Praça da Sé"
+        complemento:
+          type: string
+          example: "lado ímpar"
+        bairro:
+          type: string
+          example: "Sé"
+        localidade:
+          type: string
+          example: "São Paulo"
+        uf:
+          type: string
+          example: "SP"

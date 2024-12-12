@@ -64,6 +64,46 @@ Os pacotes seguem o prefixo `br.com.mkcf.cepapi`, conforme descrito:
 <img src="gif/diagram.png" alt="Diagram" style="width:600px;">
 ---
 
+
+
+## Estrutura da Tabela DynamoDB
+
+### Nome da Tabela: `ConsultaCEP`
+
+| **Campo**               | **Tipo**    | **Descrição**                                  | **Chave Primária** | **Sort Key**          | **Índice Secundário Global (GSI)** |
+|--------------------------|-------------|-----------------------------------------------|--------------------|-----------------------|-------------------------------------|
+| `cep`                   | String      | Código Postal (CEP).                          | ✅                 |                       |                                     |
+| `dataCadastrado`         | String      | Data e hora de cadastro do item.              |                    | ✅                    |                                     |
+| `expirationTimestamp`    | Number      | Timestamp para expiração do item (TTL).       |                    |                       |                                     |
+| `logradouro`            | String      | Nome da rua, avenida, praça, etc.             |                    |                       |                                     |
+| `complemento`           | String      | Complemento do endereço.                      |                    |                       |                                     |
+| `bairro`                | String      | Nome do bairro.                               |                    |                       |                                     |
+| `localidade`            | String      | Nome da cidade.                               |                    |                       | GSI: LocalidadeIndex (Partition Key) |
+| `uf`                    | String      | Unidade Federativa (Estado).                  |                    |                       | GSI: UfIndex (Partition Key)        |
+
+
+### Índices Secundários Globais (GSI)
+
+| **Nome do GSI**        | **Partition Key** | **Sort Key** | **Projeção**     |
+|-------------------------|-------------------|--------------|------------------|
+| `LocalidadeIndex`      | `localidade`      |              | Todos os atributos |
+| `UfIndex`              | `uf`             |              | Todos os atributos |
+
+### Notas
+
+1. **Primary Key (Chave Primária):**
+   - `cep` como Partition Key.
+   - `dataCadastrado` como Sort Key.
+
+2. **Global Secondary Indexes (GSI):**
+   - `LocalidadeIndex`: Index para consultas rápidas pela cidade (`localidade`).
+   - `UfIndex`: Index para consultas rápidas pelo estado (`uf`).
+
+3. **Time-to-Live (TTL):**
+   - O atributo `expirationTimestamp` define a expiração automática dos itens após 30 dias.
+
+
+   
 ## **Pré-requisitos**
 
 Certifique-se de ter instalados:
@@ -91,6 +131,9 @@ Certifique-se de ter instalados:
 ---
 ## **Endpoints**
 - **GET /ceps/{cep}**: Consulta informações de um CEP específico.
+
+Contrato Open APi 3.0:
+[contrato-api-cep.yaml](gif%2Fcontrato-api-cep.yaml)
 ---
 
 
