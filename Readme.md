@@ -90,7 +90,7 @@ Certifique-se de ter instalados:
 
 ---
 ## **Endpoints**
-- **GET /cep/{cep}**: Consulta informações de um CEP específico.
+- **GET /ceps/{cep}**: Consulta informações de um CEP específico.
 ---
 
 
